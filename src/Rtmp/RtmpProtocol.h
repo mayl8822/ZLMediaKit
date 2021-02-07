@@ -107,6 +107,7 @@ private:
     function<const char * (const char *data, size_t len)> _next_step_func;
     ////////////Chunk////////////
     unordered_map<int, RtmpPacket::Ptr> _map_chunk_data;
+    RtmpPacket::Ptr _last_context;
 };
 
 } /* namespace mediakit */

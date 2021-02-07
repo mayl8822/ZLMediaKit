@@ -570,6 +570,9 @@ const char* RtmpProtocol::handle_rtmp(const char *data, size_t len) {
         auto &packet_ptr = _map_chunk_data[_now_chunk_id];
         if (!packet_ptr) {
             packet_ptr = RtmpPacket::create();
+            if (_last_context) {
+                *packet_ptr = *_last_context;
+            }
         }
         auto &chunk_data = *packet_ptr;
         chunk_data.chunk_id = _now_chunk_id;
@@ -612,6 +615,7 @@ const char* RtmpProtocol::handle_rtmp(const char *data, size_t len) {
             //frame is ready
             _now_stream_index = chunk_data.stream_index;
             chunk_data.time_stamp = time_stamp + (chunk_data.is_abs_stamp ? 0 : chunk_data.time_stamp);
+            _last_context = packet_ptr;
             if (chunk_data.body_size) {
                 handle_chunk(std::move(packet_ptr));
             } else {
